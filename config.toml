@@ -1,5 +1,5 @@
 ######################## default configuration ####################
-baseURL = "https://examplesite.com"
+baseURL = "https://aarchita34.netlify.app/"
 title = "_archita | Hugo Portfolio Template"
 theme = "somrat"
 # disable language
