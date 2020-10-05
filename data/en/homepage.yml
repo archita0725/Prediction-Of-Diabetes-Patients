@@ -79,6 +79,27 @@ skill:
      # skill item loop
     - name : "Android App Development "
       parcentage : "70%"
+      
+ ##############################EDUCATION##############################     
+    EDUCATION:
+  -  name : "Bachelor of Science in Statistics"
+    college : "Sister Nibedita Government General College for Girls"
+     date :  2017-2020
+
+Percentage: 
+
+  - name : "Higher Secondary Education"
+   School : "Bidya Bharati Girls'High School"
+    date :  2014-2016
+
+Percentage: 81.8%
+
+   - name : "Secondary Education""
+    School : "Durgapur Ispat Vidyalaya""
+     date  :  2003-2014
+
+Percentage: 85.28% 
+      
 
 ################################### Service ##############################3
 service:
