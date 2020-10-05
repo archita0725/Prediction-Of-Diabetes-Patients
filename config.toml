@@ -1,6 +1,6 @@
 ######################## default configuration ####################
 baseURL = "https://examplesite.com"
-title = "Somrat | Hugo Portfolio Template"
+title = "_archita | Hugo Portfolio Template"
 theme = "somrat"
 # disable language
 disableLanguages = [] # desable language from here
@@ -119,7 +119,7 @@ contentDir = "content/english"
 weight = 1
 home = "Home"
 # copyright
-copyright = "Copyright &copy; 2020 a hugo theme by [somrat](https://somrat.netlify.com)"
+copyright = "Copyright &copy; 2020 a hugo theme by [_archita](https://somrat.netlify.com)"
 
 
 ################################### French language #####################################
@@ -130,4 +130,4 @@ contentDir = "content/french"
 weight = 2
 home = "Accueil"
 # copyright
-copyright = "Copyright &copy; 2020 a hugo theme by [somrat](https://somrat.netlify.com)"
+copyright = "Copyright &copy; 2020 a hugo theme by [_archita](https://somrat.netlify.com)"
