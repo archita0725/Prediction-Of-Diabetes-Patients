@@ -1,0 +1,165 @@
+
+---
+title: "Assessment Project- RANDOM FOREST"
+author: Article by Archita Biswas
+output: 
+  html_document:
+  toc: true
+  toc_float: true
+  theme: flatly
+ 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+The random forest is a classification algorithm consisting of many decisions trees. It uses bagging and feature randomness when building each individual tree to try to create an uncorrelated forest of trees whose prediction by committee is more accurate than that of any individual tree.In the random forest approach, a large number of decision trees are created. Every observation is fed into every decision tree. The most common outcome for each observation is used as the final output. A new observation is fed into all the trees and taking a majority vote for each classification model.
+
+An error estimate is made for the cases which were not used while building the tree. That is called an OOB (Out-of-bag) error estimate which is mentioned as a percentage.
+
+The R package "randomForest" is used to create random forests.
+
+###RANDOM FOREST WITH AN EXAMPLE
+
+Random forests or random decision forests are an ensemble learning method for classification, regression and other tasks that operate by constructing a multitude of decision trees at training time and outputting the class that is the mode of the classes (classification) or mean prediction (regression) of the individual .Random forests are about having multiple trees, a forest of trees. Those trees can all be of the same type or algorithm or the forest can be made up of a mixture of tree types (algorithms). There are some very interesting further metaphorical thoughts that describe how the forest acts (decides).
+
+###NEED OF RANDOM FOREST OVER DECISION TREE
+
+.Even though Decision trees are convenient and easily implemented, they lack accuracy. Decision trees work very effectively with the training data that was used to build them, but they’re not flexible when it comes to classifying the new sample. Which means that the accuracy during testing phase is very low.
+This happens due to a process called Over-fitting.
+[Over-fitting occurs when a model studies the training data to such an extent that it negatively influences the performance of the model on new data.]
+
+This means that the disturbance in the training data is recorded and learned as concepts by the model. But the problem here is that these concepts do not apply to the testing data and negatively impact the model’s ability to classify the new data, hence reducing the accuracy on the testing data.
+
+This is where Random Forest comes in. It is based on the idea of bagging, which is used to reduce the variation in the predictions by combining the result of multiple Decision trees on different samples of the data set.
+
+
+```{r echo=FALSE, out.width= '75%',fig.align='center',fig.cap= '...'}
+knitr::include_graphics('https://i.stack.imgur.com/9C5kN.png')
+```
+###MAJOR STEPS FOR RANDOM FOREST GENERATION
+
+The working of Random Forest is as follows:
+
+1. Loading data
+2. Changing the data type of the target variable
+3. Scaling the continuous variables
+4. To list if any na columns present
+5. Creating the model
+6. Creating error rate dataframe for all the trees
+7. No. of tree vs error plot
+8. Model built with 1000 trees
+9. Creating error rate dataframe for all the trees
+10. No. of tree vs error plot
+11. Testing model accuracy with different values of random feature selection
+12. Print result
+13. Building final tree with most optimal customizations
+14. Checking important predictors
+
+Here we'll take a very popular dataset which is originally from the National Institute of Diabetes and Digestive and Kidney Diseases to demonstrate Random Forest Generation.
+
+#Loading the dataset
+```{r data}
+data <- read.csv("C:/Users/USER/Downloads/Diabetes.csv")
+head(data)
+str(data)
+```
+
+##Changing the data type of the target variable
+```{r diabetes}
+data$Outcome <- ifelse(data$Outcome == 0, yes="Healthy", no= "Not Healthy")
+data$Outcome <- as.factor(data$Outcome)
+```
+
+
+#Scaling the continuous variables
+```{r scaling}
+data$Pregnancies <- scale(data$Pregnancies)
+data$Glucose <- scale(data$Glucose)
+data$BloodPressure <- scale(data$BloodPressure)
+data$SkinThickness <- scale(data$SkinThickness)
+data$Insulin <- scale(data$Insulin)
+data$BMI <- scale(data$BMI)
+data$DiabetesPedigreeFunction <- scale(data$DiabetesPedigreeFunction)
+data$Age <- scale(data$Age)
+```
+
+#To list if any missing values in each columns present
+```{r list}
+sapply(data,function(x)sum(is.na(x)))
+```
+
+```{r function}
+set.seed(123)
+library(randomForest)
+```
+
+#Creating the model
+```{r model}
+model <- randomForest(Outcome ~ ., data = data)
+print(model)
+```
+
+#Creating error rate dataframe for all the trees
+#Note: Total no of obs is 1500 since there 3 types of error, healthy, unhealthy and oob, each with 500 obs. So 500x3=1500
+```{r error rate dataframe}
+oob.err.data <- data.frame(
+  Trees = rep(1:nrow(model$err.rate), 3), 
+  Type = rep(c("OOB","Healthy","Unhealthy"), each = nrow(model$err.rate)),
+  Error = c(model$err.rate[,"OOB"], model$err.rate[,"Healthy"], model$err.rate[,"Not Healthy"]))
+```
+
+##No. of tree vs error plot
+```{r ggplot}
+library(e1071)
+library(caret)
+ggplot(data = oob.err.data, aes(x = Trees, y= Error)) + geom_line(aes(color = Type))
+```
+
+##Model built with 1000 trees
+```{r model1}
+model1 <- randomForest(Outcome ~ ., data = data, ntree = 1000)
+print(model1)
+```
+
+#Creating error rate dataframe for all the trees
+```{r oob.err.data1}
+oob.err.data1 <- data.frame(
+  Trees = rep(1:nrow(model1$err.rate), 3), 
+  Type = rep(c("OOB","Healthy","Unhealthy"), each = nrow(model1$err.rate)),
+  Error = c(model1$err.rate[,"OOB"], model1$err.rate[,"Healthy"], model1$err.rate[,"Not Healthy"]))
+```
+##No. of tree vs error plot
+```{r ggplot(data = oob.err.data1)}
+ggplot(data = oob.err.data1, aes(x = Trees, y= Error)) + geom_line(aes(color = Type))
+```
+
+##Testing model accuracy with different values of random feature selection
+```{r oob.values}
+oob.values <- vector(length = 10)
+for(i in 1:7){
+  temp.model <- randomForest(Outcome ~ ., data = data, mtry = i, ntree = 500)
+  oob.values[i] <- temp.model$err.rate[nrow(temp.model$err.rate),1]
+}
+```
+
+##Print result
+```{r print oob.values}
+oob.values
+```
+
+##Building final tree with most optimal customizations
+```{r model2}
+model2 <- randomForest(Outcome ~ ., data = data, ntree = 500, mtry = 1)
+print(model2)
+```
+
+##Checking important predictors
+```{r importance}
+importance(model2)
+```
+
+
+Hope I was able to share some helpful concepts with you.See you in the next article.
+My website link [Archita](https://aarchita34.netlify.app/).
