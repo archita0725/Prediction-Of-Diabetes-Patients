@@ -100,7 +100,7 @@ service:
       
     # service item loop
     - name : "Data Science"
-      image : "images/icons/datascience.png"
+      image : "images/icons/data-science.png"
       
       
     # service item loop
@@ -130,7 +130,7 @@ portfolio:
       image : "images/portfolio/a need 1.jpg"
       date : "Oct 2020"
       category : "Random Forest"
-      
+    
       
 ######################### funfacts #############################3
 funfacts:
